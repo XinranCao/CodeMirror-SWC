@@ -1,0 +1,22 @@
+.file-explorer {
+  padding: 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.file,
+.file-active {
+  cursor: pointer;
+  padding: 4px 100px 4px 8px;
+  border-radius: 4px;
+}
+
+.file:hover {
+  background-color: #f0f0f0;
+}
+
+.file-active {
+  background-color: #c3c3c3;
+}
