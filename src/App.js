@@ -1,7 +1,8 @@
 import "./App.css";
 import { useState } from "react";
-import CodeEditor from "./components/CodeEditor";
-import FileExplorer from "./components/FileExplorer";
+import CodeEditor from "./components/editor/CodeEditor";
+import FileExplorer from "./components/editor/FileExplorer";
+import SwcCompiler from "./components/compiler/SwcCompiler";
 
 const initialFiles = [
   {
@@ -37,11 +38,15 @@ function App() {
         <h4>Demo of using CodeMirror and SWC WASM</h4>
       </header>
       <section className="editor">
-        <FileExplorer
-          files={files}
-          currentFileIndex={currentFileIndex}
-          onSelectFile={handleFileSelect}
-        />
+        <div>
+          <SwcCompiler fileContent={files[currentFileIndex]} />
+
+          <FileExplorer
+            files={files}
+            currentFileIndex={currentFileIndex}
+            onSelectFile={handleFileSelect}
+          />
+        </div>
         <CodeEditor
           file={files[currentFileIndex]}
           onUpdateFile={handleFileUpdate}

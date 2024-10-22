@@ -4,9 +4,6 @@ import { vscodeDark, vscodeDarkInit } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
 
 const Editor = ({ file, onUpdateFile }) => {
-  const handleEditorChange = (editor, data, value) => {
-    onUpdateFile(value);
-  };
   return (
     <CodeMirror
       value={file.content}
@@ -20,7 +17,7 @@ const Editor = ({ file, onUpdateFile }) => {
         },
       })}
       extensions={[javascript({ jsx: true })]}
-      onChange={handleEditorChange}
+      onChange={(value) => onUpdateFile(value)}
     />
   );
 };
