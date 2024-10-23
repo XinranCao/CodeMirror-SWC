@@ -3,6 +3,7 @@ import { useState } from "react";
 import CodeEditor from "./components/editor/CodeEditor";
 import FileExplorer from "./components/editor/FileExplorer";
 import SwcCompiler from "./components/compiler/SwcCompiler";
+import Preview from "./components/preview/Preview";
 
 const initialFiles = [
   {
@@ -51,6 +52,7 @@ function App() {
           file={files[currentFileIndex]}
           onUpdateFile={handleFileUpdate}
         />
+        {/* <Preview fileContent={files[currentFileIndex]} /> */}
       </section>
     </div>
   );
