@@ -1,13 +1,12 @@
 import "./codeEditor.css";
 import CodeMirror from "@uiw/react-codemirror";
-import { vscodeDark, vscodeDarkInit } from "@uiw/codemirror-theme-vscode";
+import { vscodeDarkInit } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
 
 const Editor = ({ file, onUpdateFile }) => {
   return (
     <CodeMirror
       value={file.content}
-      style={{ width: "100%" }}
       height="100%"
       className="code-mirror"
       theme={vscodeDarkInit({
