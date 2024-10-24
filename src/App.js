@@ -6,9 +6,9 @@ import Preview from "./components/preview/Preview";
 
 const initialFiles = [
   {
-    name: "index.js",
+    name: "PreactCounter.jsx",
     type: "file",
-    content: 'console.log("Hello from index.js");',
+    content: 'console.log("Start with a simple Preact component");',
   },
   {
     name: "app.js",
