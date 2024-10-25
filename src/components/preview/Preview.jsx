@@ -1,8 +1,8 @@
 import "./preview.css";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, memo } from "react";
 import initSwc, { transformSync } from "@swc/wasm-web";
 
-const Preview = ({ fileContent }) => {
+const Preview = memo(({ fileContent }) => {
   const [initialized, setInitialized] = useState(false);
   const iframeRef = useRef(null);
 
@@ -119,6 +119,6 @@ const Preview = ({ fileContent }) => {
       />
     </div>
   );
-};
+});
 
 export default Preview;

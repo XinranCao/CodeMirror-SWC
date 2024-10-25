@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import CodeEditor from "./components/editor/CodeEditor";
 import FileExplorer from "./components/editor/FileExplorer";
 import Preview from "./components/preview/Preview";
@@ -23,22 +23,23 @@ const MY_MOSAIC_IDs = {
   editor: "Code Editor",
   preview: "Preview",
 };
+const initialLayout = {
+  direction: "row",
+  first: MY_MOSAIC_IDs.explorer,
+  second: {
+    direction: "row",
+    first: MY_MOSAIC_IDs.editor,
+    second: MY_MOSAIC_IDs.preview,
+    splitPercentage: 50,
+  },
+  splitPercentage: 20,
+};
 
 function App() {
   const [files, setFiles] = useState(initialFiles);
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
-
-  const initialLayout = {
-    direction: "row",
-    first: MY_MOSAIC_IDs.explorer,
-    second: {
-      direction: "row",
-      first: MY_MOSAIC_IDs.editor,
-      second: MY_MOSAIC_IDs.preview,
-      splitPercentage: 50,
-    },
-    splitPercentage: 20,
-  };
+  const [layout, setLayout] = useState(initialLayout);
+  const [dragging, setDragging] = useState(false);
 
   const handleFileSelect = (index) => {
     setCurrentFileIndex(index);
@@ -50,6 +51,9 @@ function App() {
     setFiles(newFiles);
   };
 
+  const fileContent = useMemo(() => {
+    return { ...files[currentFileIndex] };
+  }, [files, currentFileIndex]); // Dependencies array
   return (
     <div className="App">
       <header className="header">
@@ -57,6 +61,13 @@ function App() {
       </header>
       <section className="editor">
         <Mosaic
+          className="mosaic-blueprint-theme"
+          value={layout}
+          onChange={(newLayout) => {
+            setDragging(true);
+            setLayout(newLayout);
+          }}
+          onRelease={(newLayout) => setDragging(false)}
           renderTile={(id, path) => {
             switch (id) {
               case MY_MOSAIC_IDs.explorer:
@@ -85,15 +96,14 @@ function App() {
                     toolbarControls={[]}
                     title="Preview"
                   >
-                    <Preview fileContent={{ ...files[currentFileIndex] }} />
+                    <Preview fileContent={fileContent} />
+                    {dragging && <div className="iframe-shield" />}
                   </MosaicWindow>
                 );
               default:
                 return null;
             }
           }}
-          initialValue={initialLayout}
-          className="mosaic-blueprint-theme"
         />
       </section>
     </div>
