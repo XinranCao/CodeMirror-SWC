@@ -1,8 +1,6 @@
 .file-explorer {
-  padding: 0 8px 8px;
   display: flex;
   flex-direction: column;
-  /* gap: 2px; */
   box-sizing: border-box;
 }
 
