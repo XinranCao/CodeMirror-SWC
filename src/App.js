@@ -53,7 +53,7 @@ function App() {
 
   const fileContent = useMemo(() => {
     return { ...files[currentFileIndex] };
-  }, [files, currentFileIndex]); // Dependencies array
+  }, [files, currentFileIndex]);
   return (
     <div className="App">
       <header className="header">

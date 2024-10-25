@@ -1,10 +1,11 @@
 import "./preview.css";
-import { useEffect, useState, useRef, useCallback, memo } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import initSwc, { transformSync } from "@swc/wasm-web";
 
 const Preview = memo(({ fileContent }) => {
   const [initialized, setInitialized] = useState(false);
   const iframeRef = useRef(null);
+  const lastInvocationTimeoutRef = useRef(null);
 
   useEffect(() => {
     async function importAndRunSwcOnMount() {
@@ -14,55 +15,52 @@ const Preview = memo(({ fileContent }) => {
     importAndRunSwcOnMount();
   }, []);
 
-  function debounce(func, delay) {
-    let timer;
-    return function (...args) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, delay);
-    };
-  }
-
-  const compile = useCallback(() => {
-    if (!initialized || !fileContent.content) {
-      return;
-    }
-    try {
-      const options = {
-        jsc: {
-          parser: {
-            syntax: "ecmascript",
-            jsx: true,
-          },
-          target: "es6",
-          transform: {
-            react: {
-              pragma: "h",
-              pragmaFrag: "Fragment",
-              throwIfNamespace: true,
-              development: false,
-              useBuiltins: false,
+  useEffect(() => {
+    const compile = () => {
+      if (!initialized || !fileContent.content) {
+        return;
+      }
+      try {
+        const options = {
+          jsc: {
+            parser: {
+              syntax: "ecmascript",
+              jsx: true,
+            },
+            target: "es6",
+            transform: {
+              react: {
+                pragma: "h",
+                pragmaFrag: "Fragment",
+                throwIfNamespace: true,
+                development: false,
+                useBuiltins: false,
+              },
             },
           },
-        },
-        module: {
-          type: "es6",
-        },
-        sourceMaps: true,
-      };
-      const result = transformSync(fileContent.content, options);
-      updateIframe(result.code);
-    } catch (error) {
-      updateIframe(null, error);
+          module: {
+            type: "es6",
+          },
+          sourceMaps: true,
+        };
+        const result = transformSync(fileContent.content, options);
+        updateIframe(result.code);
+      } catch (error) {
+        updateIframe(null, error);
+      }
+    };
+
+    if (lastInvocationTimeoutRef.current) {
+      clearTimeout(lastInvocationTimeoutRef.current);
     }
+    lastInvocationTimeoutRef.current = setTimeout(compile, 1000);
+
+    return () => {
+      if (lastInvocationTimeoutRef.current) {
+        clearTimeout(lastInvocationTimeoutRef.current);
+      }
+    };
   }, [fileContent, initialized]);
-
-  const debounceCompile = useCallback(debounce(compile, 1000), [compile]);
-
-  useEffect(() => {
-    debounceCompile();
-  }, [debounceCompile, fileContent]);
 
   function updateIframe(compiledCode, errorMessage) {
     const iframe = iframeRef.current;
